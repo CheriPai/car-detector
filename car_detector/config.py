@@ -11,7 +11,6 @@ model_path = 'data/model/car_detector_model.pkl'
 (win_width, win_height) = (100, 40)
 step_size = 10
 
-
 # HOG parameters
 orientations = 9
 pixels_per_cell = (8, 8)
@@ -21,7 +20,6 @@ normalise = True
 
 # Pyramid scale amount
 scale_amt = 1.25
-
 
 # Overlap threshold for NMS
 overlap_thresh = 0.2
