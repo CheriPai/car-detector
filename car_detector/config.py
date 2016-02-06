@@ -20,4 +20,8 @@ visualise = False
 normalise = True
 
 # Pyramid scale amount
-scale_amt = 1.5
+scale_amt = 1.25
+
+
+# Overlap threshold for NMS
+overlap_thresh = 0.2

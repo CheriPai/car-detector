@@ -1,5 +1,5 @@
 import car_detector.config as cfg
-from car_detector.helpers import pyramid, sliding_window
+from car_detector.helpers import pyramid, sliding_window, non_max_suppression
 from argparse import ArgumentParser
 from cv2 import imread, imwrite, rectangle, waitKey
 from os import path
@@ -19,6 +19,7 @@ image = imread(args["image"])
 
 # Initalize classifier
 clf = joblib.load(cfg.model_path)
+boxes = []
 
 
 for i, resized in enumerate(pyramid(color.rgb2gray(image), cfg.scale_amt)):
@@ -30,10 +31,14 @@ for i, resized in enumerate(pyramid(color.rgb2gray(image), cfg.scale_amt)):
         fd = hog(window, cfg.orientations, cfg.pixels_per_cell, 
                  cfg.cells_per_block, cfg.visualise, cfg.normalise)
         if clf.predict(fd.reshape(1, -1)) == 1:
-            rectangle(image, (x, y), 
-                     (int(x+cfg.win_width*cfg.scale_amt**i), 
-                      int(y+cfg.win_height*cfg.scale_amt**i)),
-                     (0, 255, 0), 2)
+            boxes.append((x, y, x+cfg.win_width*cfg.scale_amt**i,
+                y+cfg.win_height*cfg.scale_amt**i))
+
+
+# Remove redundant boxes
+boxes = non_max_suppression(boxes, cfg.overlap_thresh)
+for (x1, y1, x2, y2) in boxes:
+    rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
 
 old_path = path.split(args["image"])[1].split(".")
