@@ -10,7 +10,7 @@ Uses non-maximum suppression to eliminate overlapping bounding boxes.
 #####Usage
 ```python car_detector/detect.py -i data/sample/test-101.jpg```
 
-####Files
+#####Files
 - [```config.py```](car_detector/config.py) contains general configuration values
 - [```detect.py```](car_detector/detect.py) runs classifier and draws bounding boxes on sample image
 - [```extract-features.py```](car_detector/extract-features.py) converts images into HOG descriptors and writes to disk to be loaded during training
