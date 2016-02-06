@@ -7,21 +7,29 @@ from skimage import color
 from skimage.feature import hog
 from sklearn import svm
 from sklearn.externals import joblib
+from sys import exit
 
 
 ap = ArgumentParser()
 ap.add_argument("-i", "--image", required=True, help="Image path")
 args = vars(ap.parse_args())
 
-
-image = imread(args["image"])
-
-
-# Initalize classifier
-clf = joblib.load(cfg.model_path)
 boxes = []
+image = imread(args["image"])
+if image is None:
+    print("Error: No image found at '{}'".format(args["image"]))
+    exit()
+
+# Load previously trained classifier
+try:
+    clf = joblib.load(cfg.model_path)
+except FileNotFoundError:
+    print("Error: Model not found at '{}'".format(cfg.model_path))
+    print("Check the path in config.py or run train.py to generate a model")
+    exit()
 
 
+# Slides window across image running HOG and classifier on each window
 for i, resized in enumerate(pyramid(color.rgb2gray(image), cfg.scale_amt)):
     for (x, y, window) in sliding_window(resized, cfg.step_size, 
                             window_size=(cfg.win_width, cfg.win_height)):
