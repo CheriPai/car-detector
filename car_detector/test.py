@@ -30,7 +30,12 @@ neg_correct = 0
 
 
 # Initalize classifier
-clf = joblib.load(cfg.model_path)
+try:
+    clf = joblib.load(cfg.model_path)
+except FileNotFoundError:
+    print("Error: Model not found at '{}'".format(cfg.model_path))
+    print("Check the path in config.py or run train.py to generate a model")
+    exit()
 
 
 for fd_path in glob(path.join(pos_fd_path, '*.pkl')):
